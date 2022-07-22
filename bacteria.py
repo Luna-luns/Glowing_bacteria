@@ -11,11 +11,14 @@ guanine = Plasmid('G')
 sequence = ui.get_sequence()
 strand = Strand(sequence)
 
-original_strand = Strand(strand.get_original_strand())
-complementary_strand = Strand(strand.get_complementary_strand())
+original_strand = strand.sequence
+complementary_strand = strand.modify_strand()
 
-restricted_original_strand = original_strand.cut_strand(original_strand.find_original_index())
-restricted_complementary_strand = complementary_strand.cut_strand(complementary_strand.find_complementary_index())
+ui.print_strand(original_strand)
+ui.print_strand(complementary_strand)
 
-ui.print_strand(restricted_original_strand)
-ui.print_strand(restricted_complementary_strand)
+# original_strand = Strand(strand.get_original_strand())
+# complementary_strand = Strand(strand.get_complementary_strand())
+
+# restricted_original_strand = original_strand.cut_strand(original_strand.find_original_index())
+# restricted_complementary_strand = complementary_strand.cut_strand(complementary_strand.find_complementary_index())
