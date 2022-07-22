@@ -1,5 +1,5 @@
 def get_sequence() -> str:
-    return input()
+    return input().strip()
 
 
 def print_strand(strand: str) -> None:
