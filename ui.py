@@ -4,3 +4,7 @@ def get_sequence() -> str:
 
 def print_strand(strand: str) -> None:
     print(strand)
+
+
+def get_file_name() -> str:
+    return input().strip()

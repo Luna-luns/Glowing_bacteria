@@ -25,3 +25,8 @@ class Strand:  # strand - single DNA chain
 
     def cut_strand(self, index: int) -> str:
         return f'{self.sequence[:index + 1]} {self.sequence[index + 1:]}'
+
+    def ligate_strands(self, plasmid: list) -> str:
+        first_gfp = self.get_first_strand()
+        second_gfp = self.get_second_strand()
+        return f'{plasmid[0]}{first_gfp}{plasmid[1]}\n{plasmid[2]}{second_gfp}{plasmid[3]}'
