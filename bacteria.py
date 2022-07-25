@@ -1,42 +1,55 @@
-# from plasmid import Plasmid
-from strand import Strand
 import ui
+import strand
+from strand import Strand
+from plasmid import Plasmid
 
 
-# adenine = Plasmid('A')
-# thymine = Plasmid('T')
-# cytosine = Plasmid('C')
-# guanine = Plasmid('G')
-#
-# _strand = Strand(ui.get_sequence())  # CCTGCAGGTCGACTCTAGAGGATCCCCGGGTACCTAGAATTGCACGCA
-# complementary_stand = Strand(_strand.modify_strand())  # GGACGTCCAGCTGAGATCTCCTAGGGGCCCATGGATCTTAACGTGCGT
-#
-# restriction_sites = Strand(ui.get_sequence())  # CTGCAG TTGCAC
-# first_part = restriction_sites.get_first_strand()  # CTGCAG
-# second_part = restriction_sites.get_second_strand()  # TTGCAC
-#
-# complementary_first_part = Strand(first_part)
-# complementary_first_part_GFP = complementary_first_part.modify_strand()  # GACGTC
-#
-# complementary_second_part = Strand(second_part)
-# complementary_second_part_GFP = complementary_second_part.modify_strand()  # AACGTG
-#
-# cut_original_strand_beginning = Strand(_strand.cut_strand(_strand.find_original_index(first_part)))
-# cut_complementary_strand_beginning = Strand(complementary_stand.cut_strand(complementary_stand.find_complementary_index(complementary_first_part_GFP)))
-#
-# cut_original_strand_end = Strand(cut_original_strand_beginning.cut_strand(cut_original_strand_beginning.find_original_index(second_part)))
-# cut_complementary_strand_end = Strand(cut_complementary_strand_beginning.cut_strand(cut_complementary_strand_beginning.find_complementary_index(complementary_second_part_GFP)))
-#
-# origin_GFP = cut_original_strand_end.get_second_strand()
-# complementary_GFP = cut_complementary_strand_end.get_second_strand()
-#
-# ui.print_strand(origin_GFP)
-# ui.print_strand(complementary_GFP)
+adenine = Plasmid('A')
+thymine = Plasmid('T')
+cytosine = Plasmid('C')
+guanine = Plasmid('G')
 
 with open(ui.get_file_name().strip()) as file_name:
-    lines = file_name.readlines()
+    lines = [line.strip() for line in file_name.readlines()]
 
-first_line = lines[0].split()  # plasmid
-second_line = Strand(lines[1])  # GFP
-ligation_result = second_line.ligate_strands(first_line)
+original_plasmid_strand = Strand(lines[0])
+plasmid_restriction_site = Strand(lines[1])
+
+complementary_plasmid_restriction_site = Strand(plasmid_restriction_site.modify_strand())
+complementary_plasmid_strand = Strand(original_plasmid_strand.modify_strand())
+original_plasmid = Strand(original_plasmid_strand.
+                          cut_strand(original_plasmid_strand.
+                                     find_original_index(plasmid_restriction_site.sequence)))
+complementary_plasmid = Strand(complementary_plasmid_strand.
+                               cut_strand(complementary_plasmid_strand.
+                                          find_complementary_index(complementary_plasmid_restriction_site.sequence)))
+first_complimentary_plasmid = complementary_plasmid.get_first_strand()
+second_complimentary_plasmid = complementary_plasmid.get_second_strand()
+
+GFP_original_strand = Strand(lines[2])
+GFP_restriction_sites = Strand(lines[3])
+
+GFP_complementary_strand = Strand(GFP_original_strand.modify_strand())
+GFP_first_part = Strand(GFP_restriction_sites.get_first_strand())
+GFP_second_part = Strand(GFP_restriction_sites.get_second_strand())
+GFP_complementary_first_part = Strand(GFP_first_part.modify_strand())
+GFP_complementary_second_part = Strand(GFP_second_part.modify_strand())
+
+cut_GFP_original_strand_beginning = Strand(GFP_original_strand.
+                                           cut_strand(GFP_original_strand.
+                                                      find_original_index(GFP_first_part.sequence)))
+original_index_GFP_end = cut_GFP_original_strand_beginning.find_original_index(GFP_second_part.sequence)
+cut_GFP_original_strand_end = Strand(cut_GFP_original_strand_beginning.cut_strand(original_index_GFP_end))
+cut_GFP_complementary_strand_beginning = Strand(GFP_complementary_strand.
+                                                cut_strand(GFP_complementary_strand.
+                                                           find_complementary_index(GFP_complementary_first_part.
+                                                                                    sequence)))
+cut_GFP_complementary_strand_end = Strand(cut_GFP_complementary_strand_beginning.
+                                          cut_strand(strand.find_complementary_index_gfp_end(original_index_GFP_end)))
+
+origin_GFP = cut_GFP_original_strand_end.get_second_strand()
+complementary_GFP = cut_GFP_complementary_strand_end.get_second_strand()
+
+ligation_result = original_plasmid.\
+    ligate_strands(origin_GFP, complementary_GFP, first_complimentary_plasmid, second_complimentary_plasmid)
 ui.print_strand(ligation_result)

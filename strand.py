@@ -26,7 +26,13 @@ class Strand:  # strand - single DNA chain
     def cut_strand(self, index: int) -> str:
         return f'{self.sequence[:index + 1]} {self.sequence[index + 1:]}'
 
-    def ligate_strands(self, plasmid: list) -> str:
-        first_gfp = self.get_first_strand()
-        second_gfp = self.get_second_strand()
-        return f'{plasmid[0]}{first_gfp}{plasmid[1]}\n{plasmid[2]}{second_gfp}{plasmid[3]}'
+    def ligate_strands(self, original_gfp: str, complementary_gfp: str, first_complimentary_plasmid: str, second_complimentary_plasmid: str) -> str:
+        first_original_plasmid = self.get_first_strand()
+        second_original_plasmid = self.get_second_strand()
+
+        return f'{first_original_plasmid}{original_gfp}{second_original_plasmid}\n' \
+               f'{first_complimentary_plasmid}{complementary_gfp}{second_complimentary_plasmid}'
+
+
+def find_complementary_index_gfp_end(original_index: int):
+    return original_index + 4
